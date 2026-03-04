@@ -10,7 +10,8 @@ class LogModel : public QAbstractTableModel {
     Q_OBJECT
 public:
     enum Column {
-        ColTime = 0,
+        ColMid = 0,
+        ColTime,
         ColLevel,
         ColPid,
         ColTid,
@@ -23,7 +24,8 @@ public:
     };
 
     enum Roles {
-        TimestampRole = Qt::UserRole + 1,
+        MessageIdRole = Qt::UserRole + 1,
+        TimestampRole,
         LevelRole,
         SeverityRole,
         PidRole,

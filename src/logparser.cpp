@@ -40,6 +40,7 @@ LogParser::Result LogParser::parseFile(const QString& filePath) {
     out.reserve(4096);
 
     bool hasCurrent = false;
+    qint64 nextMessageId = 0;
 
     while (!ts.atEnd()) {
         const QString line = ts.readLine();
@@ -48,6 +49,7 @@ LogParser::Result LogParser::parseFile(const QString& filePath) {
         if (m.hasMatch()) {
             LogEntry e;
             const QString tsStr = m.captured("ts");
+            e.messageId = nextMessageId;
             e.timestamp = QDateTime::fromString(tsStr, "yyyy-MM-dd HH:mm:ss.zzz");
             e.level = m.captured("lvl").trimmed().toUpper();
             e.severity = severityFromLevel(e.level);
@@ -74,10 +76,12 @@ LogParser::Result LogParser::parseFile(const QString& filePath) {
                     // No previous entry - treat as separate
                     e.message = cont;
                     out.push_back(std::move(e));
+                    ++nextMessageId;
                     hasCurrent = true;
                 }
             } else {
                 out.push_back(std::move(e));
+                ++nextMessageId;
                 hasCurrent = true;
             }
             continue;
@@ -95,12 +99,14 @@ LogParser::Result LogParser::parseFile(const QString& filePath) {
             out.last().raw += QStringLiteral("\n") + line;
         } else {
             LogEntry meta;
+            meta.messageId = nextMessageId;
             meta.isMeta = true;
             meta.level = QStringLiteral("META");
             meta.severity = -1;
             meta.message = line;
             meta.raw = line;
             out.push_back(std::move(meta));
+            ++nextMessageId;
             hasCurrent = true;
         }
     }

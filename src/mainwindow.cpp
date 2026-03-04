@@ -70,6 +70,7 @@ void MainWindow::setupUi() {
     m_view->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     // Useful default widths
+    m_view->setColumnWidth(LogModel::ColMid, 90);
     m_view->setColumnWidth(LogModel::ColTime, 180);
     m_view->setColumnWidth(LogModel::ColLevel, 70);
     m_view->setColumnWidth(LogModel::ColPid, 60);
@@ -444,6 +445,9 @@ void MainWindow::onCurrentChanged() {
     const LogEntry& e = m_model->entryAt(row);
 
     QString text;
+    if (e.messageId >= 0) {
+        text += QStringLiteral("MID=%1\n").arg(e.messageId);
+    }
     if (e.timestamp.isValid()) {
         text += e.timestamp.toString("yyyy-MM-dd HH:mm:ss.zzz") + " " + e.level + "\n";
         text += QStringLiteral("pid=%1 tid=%2 [%3]\n").arg(e.pid).arg(e.tid).arg(e.category);
@@ -461,12 +465,12 @@ void MainWindow::onCurrentChanged() {
 
 void MainWindow::sortNewest() {
     if (!m_view) return;
-    m_view->sortByColumn(LogModel::ColTime, Qt::DescendingOrder);
+    m_view->sortByColumn(LogModel::ColMid, Qt::DescendingOrder);
 }
 
 void MainWindow::sortOldest() {
     if (!m_view) return;
-    m_view->sortByColumn(LogModel::ColTime, Qt::AscendingOrder);
+    m_view->sortByColumn(LogModel::ColMid, Qt::AscendingOrder);
 }
 
 void MainWindow::clearAllFilters() {

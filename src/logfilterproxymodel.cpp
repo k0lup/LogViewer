@@ -119,6 +119,14 @@ bool LogFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex& so
 bool LogFilterProxyModel::lessThan(const QModelIndex& source_left, const QModelIndex& source_right) const {
     const int col = source_left.column();
 
+    const qint64 leftMid = sourceModel()->data(source_left, LogModel::MessageIdRole).toLongLong();
+    const qint64 rightMid = sourceModel()->data(source_right, LogModel::MessageIdRole).toLongLong();
+
+    if (col == LogModel::ColMid) {
+        if (leftMid != rightMid) return leftMid < rightMid;
+        return source_left.row() < source_right.row();
+    }
+
     if (col == LogModel::ColTime) {
         const QDateTime a = sourceModel()->data(source_left, LogModel::TimestampRole).toDateTime();
         const QDateTime b = sourceModel()->data(source_right, LogModel::TimestampRole).toDateTime();
@@ -126,10 +134,14 @@ bool LogFilterProxyModel::lessThan(const QModelIndex& source_left, const QModelI
         const bool av = a.isValid();
         const bool bv = b.isValid();
 
-        if (av && bv) return a < b;
+        if (av && bv) {
+            if (a != b) return a < b;
+            return leftMid < rightMid;
+        }
         if (av && !bv) return false; // valid after meta
         if (!av && bv) return true;
-        // both invalid => stable by row
+
+        if (leftMid != rightMid) return leftMid < rightMid;
         return source_left.row() < source_right.row();
     }
 

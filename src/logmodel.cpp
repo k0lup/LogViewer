@@ -22,6 +22,7 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
     if (role != Qt::DisplayRole) return QVariant();
     if (orientation == Qt::Horizontal) {
         switch (section) {
+            case ColMid:      return QStringLiteral("MID");
             case ColTime:     return QStringLiteral("Время");
             case ColLevel:    return QStringLiteral("Тип");
             case ColPid:      return QStringLiteral("PID");
@@ -80,6 +81,7 @@ QVariant LogModel::data(const QModelIndex& index, int role) const {
 
     // Custom roles for filtering/sorting
     switch (role) {
+        case MessageIdRole: return e.messageId;
         case TimestampRole: return e.timestamp;
         case LevelRole:     return e.level;
         case SeverityRole:  return e.severity;
@@ -97,6 +99,7 @@ QVariant LogModel::data(const QModelIndex& index, int role) const {
 
     if (role == Qt::DisplayRole) {
         switch (col) {
+            case ColMid:      return (e.messageId >= 0 ? QString::number(e.messageId) : QString());
             case ColTime:     return tsToString(e.timestamp);
             case ColLevel:    return e.level;
             case ColPid:      return (e.pid >= 0 ? QString::number(e.pid) : QString());

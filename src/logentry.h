@@ -2,8 +2,10 @@
 
 #include <QDateTime>
 #include <QString>
+#include <QtGlobal>
 
 struct LogEntry {
+    qint64 messageId = -1;    // global order in file (0..N-1)
     QDateTime timestamp;      // invalid for meta lines
     QString level;            // DEBUG/INFO/WARN/ERROR/FATAL/META
     int severity = -1;        // 0..4, -1 unknown
