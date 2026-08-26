@@ -226,7 +226,7 @@ void HighlightRulesDialog::removeRule() {
 void HighlightRulesDialog::moveUp() {
     const int r = currentRow();
     if (r <= 0 || r >= m_rules.size()) return;
-    m_rules.swapItemsAt(r, r - 1);
+    qSwap(m_rules[r], m_rules[r - 1]);
     rebuildTable();
     m_table->selectRow(r - 1);
 }
@@ -234,7 +234,7 @@ void HighlightRulesDialog::moveUp() {
 void HighlightRulesDialog::moveDown() {
     const int r = currentRow();
     if (r < 0 || r >= m_rules.size() - 1) return;
-    m_rules.swapItemsAt(r, r + 1);
+    qSwap(m_rules[r], m_rules[r + 1]);
     rebuildTable();
     m_table->selectRow(r + 1);
 }

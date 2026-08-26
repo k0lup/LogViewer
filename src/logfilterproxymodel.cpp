@@ -7,7 +7,7 @@
 static QSet<int> parsePidList(const QString& text) {
     QSet<int> out;
     const QString t = text;
-    const QStringList parts = t.split(QRegExp("[\\s,;]+"), Qt::SkipEmptyParts);
+    const QStringList parts = t.split(QRegExp("[\\s,;]+"), QString::SkipEmptyParts);
     for (const QString& p : parts) {
         bool ok = false;
         const int v = p.toInt(&ok);

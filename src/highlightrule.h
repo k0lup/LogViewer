@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QJsonObject>
 #include <QRegularExpression>
+#include <QVector>
 
 struct HighlightRule {
     bool enabled = true;
